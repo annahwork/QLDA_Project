@@ -1,0 +1,38 @@
+<!doctype html><html lang="vi"><head>
+<meta charset="utf-8"><title>Danh mục</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head><body class="p-4">
+<h3>Quản lý Danh mục</h3>
+<div class="row g-2 mb-3">
+  <div class="col-auto"><input id="tendm" class="form-control" placeholder="Tên danh mục"></div>
+  <div class="col-auto"><button class="btn btn-primary" onclick="add()">Thêm</button></div>
+</div>
+<table class="table table-striped" id="tbl"><thead><tr><th>Mã</th><th>Tên</th><th></th></tr></thead><tbody></tbody></table>
+<script>
+const API='../api/danhmuc.php';
+async function load(){
+  const res=await fetch(API); const j=await res.json();
+  const tb=document.querySelector('#tbl tbody'); tb.innerHTML='';
+  j.data.forEach(r=>{
+    tb.insertAdjacentHTML('beforeend', `<tr>
+      <td>${r.madm}</td>
+      <td><input value="${r.tendm}" class="form-control form-control-sm" id="dm${r.madm}"></td>
+      <td>
+        <button class="btn btn-sm btn-success" onclick="save(${r.madm})">Lưu</button>
+        <button class="btn btn-sm btn-danger" onclick="del(${r.madm})">Xóa</button>
+      </td></tr>`);
+  });
+}
+async function add(){
+  const tendm=document.getElementById('tendm').value.trim(); if(!tendm) return;
+  await fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({tendm})});
+  document.getElementById('tendm').value=''; load();
+}
+async function save(madm){
+  const tendm=document.getElementById('dm'+madm).value.trim();
+  await fetch(API,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({madm,tendm})}); load();
+}
+async function del(madm){ if(!confirm('Xóa?'))return; await fetch(API+'?madm='+madm,{method:'DELETE'}); load(); }
+load();
+</script>
+</body></html>

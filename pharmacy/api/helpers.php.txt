@@ -1,0 +1,6 @@
+<?php
+header('Content-Type: application/json; charset=utf-8');
+function json_input(){ $r=file_get_contents('php://input'); return $r?json_decode($r,true):[]; }
+function ok($data=[],$code=200){ http_response_code($code); echo json_encode(['ok'=>true,'data'=>$data]); exit; }
+function bad($msg,$code=400){ http_response_code($code); echo json_encode(['ok'=>false,'error'=>$msg]); exit; }
+function require_fields($a,$fs){ foreach($fs as $f){ if(!isset($a[$f])||$a[$f]==='') bad("Thiếu trường: $f"); } }
