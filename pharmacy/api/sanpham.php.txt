@@ -1,0 +1,13 @@
+<?php
+require 'db.php'; require 'helpers.php'; $pdo=pdo(); $m=$_SERVER['REQUEST_METHOD'];
+if($m==='GET'){ ok($pdo->query("SELECT s.*, d.tendm, u.tendvt FROM sanpham s
+  LEFT JOIN danhmuc d ON s.madm=d.madm LEFT JOIN donvitinh u ON s.madvt=u.madvt ORDER BY masp DESC")->fetchAll()); }
+if($m==='POST'){ $b=json_input(); require_fields($b,['tensp','giaban']);
+  $pdo->prepare("INSERT INTO sanpham(tensp,giaban,giamgia,hinhanh,congdung,xuatxu,cachdung,madm,madvt) VALUES(?,?,?,?,?,?,?,?,?)")
+  ->execute([$b['tensp'],$b['giaban'],$b['giamgia']??0,$b['hinhanh']??null,$b['congdung']??null,$b['xuatxu']??null,$b['cachdung']??null,$b['madm']??null,$b['madvt']??null]);
+  ok(['masp'=>$pdo->lastInsertId()],201); }
+if($m==='PUT'){ $b=json_input(); require_fields($b,['masp','tensp','giaban']);
+  $pdo->prepare("UPDATE sanpham SET tensp=?, giaban=?, giamgia=?, hinhanh=?, congdung=?, xuatxu=?, cachdung=?, madm=?, madvt=? WHERE masp=?")
+  ->execute([$b['tensp'],$b['giaban'],$b['giamgia']??0,$b['hinhanh']??null,$b['congdung']??null,$b['xuatxu']??null,$b['cachdung']??null,$b['madm']??null,$b['madvt']??null,$b['masp']]); ok(); }
+if($m==='DELETE'){ parse_str($_SERVER['QUERY_STRING']??'',$q); if(empty($q['masp'])) bad('Thiếu masp'); $pdo->prepare("DELETE FROM sanpham WHERE masp=?")->execute([$q['masp']]); ok(); }
+bad('Method không hỗ trợ',405);

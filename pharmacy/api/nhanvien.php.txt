@@ -1,0 +1,10 @@
+<?php
+require 'db.php'; require 'helpers.php'; $pdo=pdo(); $m=$_SERVER['REQUEST_METHOD'];
+if($m==='GET'){ ok($pdo->query("SELECT * FROM nhanvien ORDER BY manv DESC")->fetchAll()); }
+if($m==='POST'){ $b=json_input(); require_fields($b,['hoten']); $pdo->prepare("INSERT INTO nhanvien(hoten,gt,ns,ngaysvl) VALUES(?,?,?,?)")
+  ->execute([$b['hoten'],$b['gt']??'Khác',$b['ns']??null,$b['ngaysvl']??null]); ok(['manv'=>$pdo->lastInsertId()],201); }
+if($m==='PUT'){ $b=json_input(); require_fields($b,['manv','hoten']);
+  $pdo->prepare("UPDATE nhanvien SET hoten=?, gt=?, ns=?, ngaysvl=? WHERE manv=?")
+  ->execute([$b['hoten'],$b['gt']??'Khác',$b['ns']??null,$b['ngaysvl']??null,$b['manv']]); ok(); }
+if($m==='DELETE'){ parse_str($_SERVER['QUERY_STRING']??'',$q); if(empty($q['manv'])) bad('Thiếu manv'); $pdo->prepare("DELETE FROM nhanvien WHERE manv=?")->execute([$q['manv']]); ok(); }
+bad('Method không hỗ trợ',405);

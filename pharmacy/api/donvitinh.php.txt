@@ -1,0 +1,7 @@
+<?php
+require 'db.php'; require 'helpers.php'; $pdo=pdo(); $m=$_SERVER['REQUEST_METHOD'];
+if($m==='GET'){ ok($pdo->query("SELECT * FROM donvitinh ORDER BY madvt DESC")->fetchAll()); }
+if($m==='POST'){ $b=json_input(); require_fields($b,['tendvt']); $pdo->prepare("INSERT INTO donvitinh(tendvt) VALUES(?)")->execute([$b['tendvt']]); ok(['madvt'=>$pdo->lastInsertId()],201); }
+if($m==='PUT'){ $b=json_input(); require_fields($b,['madvt','tendvt']); $pdo->prepare("UPDATE donvitinh SET tendvt=? WHERE madvt=?")->execute([$b['tendvt'],$b['madvt']]); ok(); }
+if($m==='DELETE'){ parse_str($_SERVER['QUERY_STRING']??'',$q); if(empty($q['madvt'])) bad('Thiếu madvt'); $pdo->prepare("DELETE FROM donvitinh WHERE madvt=?")->execute([$q['madvt']]); ok(); }
+bad('Method không hỗ trợ',405);

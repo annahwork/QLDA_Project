@@ -1,0 +1,10 @@
+<!doctype html><meta charset="utf-8">
+<h3>Pharmacy Demo</h3>
+<ul>
+  <li><a href="danhmuc.html">Danh mục</a></li>
+  <li><a href="donvitinh.html">Đơn vị tính</a></li>
+  <li><a href="nhanvien.html">Nhân viên</a></li>
+  <li><a href="sanpham.html">Sản phẩm</a></li>
+  <li><a href="donhang_tao.html">Tạo đơn hàng</a></li>
+  <li><a href="donhang_ds.html">Danh sách đơn hàng</a></li>
+</ul>
